@@ -83,12 +83,18 @@ function click(a, b) {
     }
     count([], [], [], []);
     let calc = [];
+    let calc2 = [];
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board.length; j++) {
             if (board[i][j].indexOf('x') !== -1) {
                 calc.push(board[j].indexOf('x'));
                 if (calc.length === board.length && calc.every(x => x === j)) {
                     showWinner(0);
+                }
+            } else if (board[i][j].indexOf('o') !== -1) {
+                calc2.push(board[j].indexOf('o'));
+                if (calc2.length === board.length && calc2.every(x => x === j)) {
+                    showWinner(1);
                 }
             }
         }
