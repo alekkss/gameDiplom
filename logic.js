@@ -29,20 +29,14 @@ function startGame() {
 }
 
 function click(a, b) {
+    // тут присваиваем символ в поле
 
-    // переключение с x на o
-    for (let i = 0; i < board[0].length; i++) {
-        for (let j = 0; j < board.length; j++) {
-            if (+a === j && +b === i) {
-                if (activePlayer) {
-                    board[j][i] = players[1];
-                    activePlayer = 0;
-                } else {
-                    board[j][i] = players[0];
-                    activePlayer = 1;
-                }
-            }
-        }
+    if (activePlayer) {
+        board[a][b] = players[1];
+        activePlayer = 0;
+    } else {
+        board[a][b] = players[0];
+        activePlayer = 1;
     }
     // алгоритм для проверки на выигрыш по горизонтали
     board.map((item) => {
@@ -82,23 +76,24 @@ function click(a, b) {
         });
     }
     count([], [], [], []);
-    let calc = [];
-    let calc2 = [];
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board.length; j++) {
-            if (board[i][j].indexOf('x') !== -1) {
-                calc.push(board[j].indexOf('x'));
-                if (calc.length === board.length && calc.every(x => x === j)) {
-                    showWinner(0);
-                }
-            } else if (board[i][j].indexOf('o') !== -1) {
-                calc2.push(board[j].indexOf('o'));
-                if (calc2.length === board.length && calc2.every(x => x === j)) {
-                    showWinner(1);
+    function calc(calc, calc2) {
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board.length; j++) {
+                if (board[i][j].indexOf('x') !== -1) {
+                    calc.push(board[j].indexOf('x'));
+                    if (calc.length === board.length && calc.every(x => x === j)) {
+                        showWinner(0);
+                    }
+                } else if (board[i][j].indexOf('o') !== -1) {
+                    calc2.push(board[j].indexOf('o'));
+                    if (calc2.length === board.length && calc2.every(x => x === j)) {
+                        showWinner(1);
+                    }
                 }
             }
         }
     }
+    calc([], []);
     renderBoard(board);
 }
 
