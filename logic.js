@@ -1,100 +1,88 @@
 let players = ['x', 'o'];
 let activePlayer = 0;
 
+// объявляем переменную доски
+let board;
+
 
 function startGame() {
-    board = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-    ];
-    activePlayer = 0;
-    let num = +prompt('Напишите число, это будет игровое поле!');
+    let num = prompt('Напишите число, это будет игровое поле!');
+    if (num === null || num === '') {
+        num = 3;
+    }
+    console.log(num);
     for (let i = isFinite(num); i !== true;) {
         if (!isFinite(num)) {
-            num = +prompt('Введите число');
+            num = prompt('Введите число');
             i = isFinite(num);
         }
     }
-    let a = board[0].slice(0, board[0].length);
-    for (let j = 0; j < board.length; j++) {
-        for (let i = board[j].length; i < num; i++) {
-            board[j].push('');
-        }
-        for (let k = board.length; k < num; k++) {
-            board.push(a);
+    // let a = board[0].slice(0, board[0].length);
+    // console.log(a);
+
+
+    // более простой способ генерации поля
+    board = [];
+    for (let i = 0; i < num; i++) {
+        board[i] = [];
+        for (let j = 0; j < num; j++) {
+            board[i][j] = "";
         }
     }
+
+    activePlayer = 0;
     renderBoard(board);
 }
 
 function click(a, b) {
     // тут присваиваем символ в поле
+    board[a][b] = players[activePlayer]; // эта строка общая и не зависит от того, кто сейчас активный игрок
 
-    if (activePlayer) {
-        board[a][b] = players[1];
-        activePlayer = 0;
-    } else {
-        board[a][b] = players[0];
-        activePlayer = 1;
-    }
+    // передача хода должна быть в конце функции, после проверки выигрыша
     // алгоритм для проверки на выигрыш по горизонтали
     board.map((item) => {
-        if (item.every((x) => x.includes(players[0]))) {
-            showWinner(0);
-        } else if (item.every((x) => x.includes(players[1]))) {
-            showWinner(1);
+        // упрощённая конструкция с activePlayer вместо конкретного индекса символа
+        if (item.every((x) => x.includes(players[activePlayer]))) {
+            showWinner(activePlayer);
         }
     });
+
     //Функция проверки победы крест на крест
-    function count(arr1, arr2, arr3, arr4) {
+    function count(arr1, arr2) {
+        // и ещё раз, для закрепления
         board.forEach((item, id) => {
-            if (item[id] === players[0]) {
+            if (item[id] === players[activePlayer]) {
                 arr1.push(item[id]);
                 if (arr1.length === board.length) {
-                    showWinner(0);
-                }
-            } else if (item[id] === players[1]) {
-                arr2.push(item[id]);
-                if (arr2.length === board.length) {
-                    showWinner(1);
+                    showWinner(activePlayer);
                 }
             }
         });
         board.map((item, id) => {
-            if (item[((board.length - 1) - id)] === players[0]) {
-                arr3.push('x');
-                if (arr3.length === board.length) {
-                    showWinner(0);
-                }
-            } else if (item[((board.length - 1) - id)] === players[1]) {
-                arr4.push('o');
-                if (arr4.length === board.length) {
-                    showWinner(1);
+            if (item[((board.length - 1) - id)] === players[activePlayer]) {
+                arr2.push(item[((board.length - 1) - id)]);
+                if (arr2.length === board.length) {
+                    showWinner(activePlayer);
                 }
             }
         });
     }
-    count([], [], [], []);
-    function calc(calc, calc2) {
+    count([], []);
+    function calc(calc) {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board.length; j++) {
-                if (board[i][j].indexOf('x') !== -1) {
-                    calc.push(board[j].indexOf('x'));
+                if (board[i][j].indexOf(players[activePlayer]) !== -1) {
+                    calc.push(board[j].indexOf(players[activePlayer]));
                     if (calc.length === board.length && calc.every(x => x === j)) {
-                        showWinner(0);
-                    }
-                } else if (board[i][j].indexOf('o') !== -1) {
-                    calc2.push(board[j].indexOf('o'));
-                    if (calc2.length === board.length && calc2.every(x => x === j)) {
-                        showWinner(1);
+                        showWinner(activePlayer);
                     }
                 }
             }
         }
     }
-    calc([], []);
+    calc([]);
     renderBoard(board);
+
+    // передача хода
+    activePlayer = activePlayer === 0 ? 1 : 0;
 }
-
-

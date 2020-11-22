@@ -10,7 +10,6 @@ for (let btn of resetButtons) {
             modalEl.classList.add('hidden');
         }
         startGame();
-        board = board;
     });
 
 }
